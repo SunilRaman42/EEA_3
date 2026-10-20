@@ -1,0 +1,21 @@
+{
+  "name": "ssa-edtech-review-workspace",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sub-Saharan Africa EdTech Landscape Review - Dashboard and Data Pipeline",
+  "scripts": {
+    "dev": "npm --prefix dashboard run dev",
+    "build": "npm --prefix dashboard run build",
+    "preview": "npm --prefix dashboard run preview",
+    "generate-data": "python3 scripts/generate_synthetic_data.py",
+    "process-data": "python3 scripts/process_survey_data.py"
+  },
+  "keywords": [
+    "edtech",
+    "unesco",
+    "sub-saharan-africa",
+    "dashboard",
+    "triangulation"
+  ],
+  "license": "MIT"
+}
