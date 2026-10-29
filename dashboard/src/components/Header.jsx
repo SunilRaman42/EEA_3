@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { 
-  Globe2, Layers, Code, Sparkles, Filter, 
+  Globe2, Layers, Code, Sparkles, Filter, MapPin,
   BarChart3, Users, Building2, Landmark, Table 
 } from 'lucide-react';
+import { COUNTRY_TO_BLOC } from '../utils/dataProcessor';
 
 export default function Header({ 
   metadata, 
@@ -16,6 +17,12 @@ export default function Header({
   isEmbedded,
   hideHeader
 }) {
+  const availableCountries = useMemo(() => {
+    if (!metadata?.allCountries) return [];
+    if (selectedBloc === 'All Blocs') return metadata.allCountries;
+    return metadata.allCountries.filter(c => COUNTRY_TO_BLOC[c] === selectedBloc);
+  }, [metadata, selectedBloc]);
+
   if (isEmbedded && hideHeader) {
     // Ultra compact toolbar for iframe embed mode
     return (
@@ -59,8 +66,19 @@ export default function Header({
             onChange={(e) => setSelectedBloc(e.target.value)}
             className="bg-slate-50 border border-slate-200 text-xs rounded px-2 py-1 text-slate-700"
           >
-            {metadata.linguisticBlocs.map(b => (
+            {(metadata?.linguisticBlocs || ['All Blocs']).map(b => (
               <option key={b} value={b}>{b}</option>
+            ))}
+          </select>
+
+          <select
+            value={selectedCountry}
+            onChange={(e) => setSelectedCountry(e.target.value)}
+            className="bg-slate-50 border border-slate-200 text-xs rounded px-2 py-1 text-slate-700 max-w-[120px]"
+          >
+            <option value="All">All Countries</option>
+            {availableCountries.map(c => (
+              <option key={c} value={c}>{c}</option>
             ))}
           </select>
         </div>
@@ -92,17 +110,34 @@ export default function Header({
         </div>
 
         {/* Global Controls & Embed Button */}
-        <div className="flex items-center gap-2.5 self-end md:self-auto">
+        <div className="flex flex-wrap items-center gap-2 self-start md:self-auto">
           {/* Linguistic Bloc Selector */}
-          <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1 text-xs">
-            <Filter className="w-3.5 h-3.5 text-slate-400" />
+          <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs">
+            <Filter className="w-3.5 h-3.5 text-sky-600 shrink-0" />
+            <span className="text-[11px] font-semibold text-slate-400 uppercase hidden sm:inline">Bloc:</span>
             <select
               value={selectedBloc}
               onChange={(e) => setSelectedBloc(e.target.value)}
-              className="bg-transparent border-none text-slate-700 font-medium focus:outline-none cursor-pointer text-xs"
+              className="bg-transparent border-none text-slate-800 font-semibold focus:outline-none cursor-pointer text-xs"
             >
-              {metadata.linguisticBlocs.map(bloc => (
+              {(metadata?.linguisticBlocs || ['All Blocs']).map(bloc => (
                 <option key={bloc} value={bloc}>{bloc}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Country Selector */}
+          <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs">
+            <MapPin className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+            <span className="text-[11px] font-semibold text-slate-400 uppercase hidden sm:inline">Country:</span>
+            <select
+              value={selectedCountry}
+              onChange={(e) => setSelectedCountry(e.target.value)}
+              className="bg-transparent border-none text-slate-800 font-semibold focus:outline-none cursor-pointer text-xs max-w-[150px]"
+            >
+              <option value="All">{selectedBloc === 'All Blocs' ? 'All Countries (30)' : `All in ${selectedBloc}`}</option>
+              {availableCountries.map(country => (
+                <option key={country} value={country}>{country}</option>
               ))}
             </select>
           </div>
@@ -113,7 +148,7 @@ export default function Header({
             className="inline-flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold transition border border-slate-200"
           >
             <Code className="w-3.5 h-3.5 text-sky-600" />
-            <span>Embed Widget</span>
+            <span className="hidden sm:inline">Embed Widget</span>
           </button>
         </div>
       </div>

@@ -9,6 +9,20 @@ export default function TeacherTab({ data, currentBloc, currentCountry, currentS
   const { teachers } = data;
   const [filterType, setFilterType] = useState('All');
 
+  // Dynamic calculated insights
+  const ruralElec = teachers.elecByLocation?.find(l => l.location.toLowerCase().includes('rural'));
+  const ruralOutagePct = ruralElec ? Number((ruralElec.unreliable + ruralElec.none).toFixed(1)) : 74;
+
+  const reduceWorkload = (teachers.workloadDist || [])
+    .filter(w => w.name.toLowerCase().includes('reduce'))
+    .reduce((sum, w) => sum + w.percentage, 0);
+  const addWorkload = (teachers.workloadDist || [])
+    .filter(w => w.name.toLowerCase().includes('add'))
+    .reduce((sum, w) => sum + w.percentage, 0);
+
+  const schoolProcedurePct = teachers.harmReportingDist?.find(h => h.name.toLowerCase().includes('procedure'))?.percentage ?? 31;
+  const informalPct = teachers.harmReportingDist?.find(h => h.name.toLowerCase().includes('informally'))?.percentage ?? 44;
+
   // Colors for Workload
   const WORKLOAD_COLORS = {
     'Reduce it a lot': '#059669',
@@ -77,7 +91,7 @@ export default function TeacherTab({ data, currentBloc, currentCountry, currentS
           </div>
 
           <div className="mt-4 p-3 bg-slate-50 rounded-lg border border-slate-200 text-xs text-slate-600">
-            <span className="font-semibold text-slate-800">Key Finding:</span> In rural schools, over <strong>74%</strong> face either frequent power outages or zero electricity at all, making cloud-only EdTech tools completely unviable.
+            <span className="font-semibold text-slate-800">Key Finding:</span> In rural schools, over <strong>{ruralOutagePct}%</strong> face either frequent power outages or zero electricity at all, making cloud-only EdTech tools completely unviable.
           </div>
         </div>
 
@@ -112,7 +126,7 @@ export default function TeacherTab({ data, currentBloc, currentCountry, currentS
           </div>
 
           <div className="mt-4 p-3 bg-emerald-50/70 rounded-lg border border-emerald-200 text-xs text-emerald-800">
-            <strong>52% Net Workload Reduction:</strong> When tools function well (e.g., auto-marking, prepared lesson plans), a majority of teachers report workload reductions, though 32% experience added friction from reporting mandates.
+            <strong>{reduceWorkload.toFixed(0)}% Net Workload Reduction:</strong> When tools function well (e.g., auto-marking, prepared lesson plans), a majority of teachers report workload reductions, though {addWorkload.toFixed(0)}% experience added friction from reporting mandates.
           </div>
         </div>
       </div>
@@ -178,7 +192,7 @@ export default function TeacherTab({ data, currentBloc, currentCountry, currentS
           </div>
 
           <div className="mt-4 p-3 bg-amber-50/70 rounded-lg border border-amber-200 text-xs text-amber-900">
-            <strong>Procedural Vulnerability:</strong> Only 31% have an established formal protocol at school. 44% rely solely on informal notification to the head teacher, leaving serious child protection gaps.
+            <strong>Procedural Vulnerability:</strong> Only {schoolProcedurePct}% have an established formal protocol at school. {informalPct}% rely solely on informal notification to the head teacher, leaving serious child protection gaps.
           </div>
         </div>
       </div>

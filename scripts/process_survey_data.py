@@ -126,8 +126,12 @@ def process_teachers(df):
             "aiUse": row.get("AI_Use_Frequency"),
             "aiConf": clean_value(row.get("AI_Confidence")),
             "aiTraining": row.get("AI_Training_Received"),
+            "aiLanguage": clean_value(row.get("AI_Local_Language_Handling")),
             "phoneRules": row.get("Phone_Rules"),
-            "harmReport": row.get("Harm_Reporting_Known")
+            "harmReport": row.get("Harm_Reporting_Known"),
+            "digitalTools": clean_value(row.get("Digital_Tools_Used")),
+            "comprehension": clean_value(row.get("Student_Language_Comprehension")),
+            "quote": clean_value(row.get("Qualitative_Comment"))
         })
 
     return {
@@ -149,6 +153,19 @@ def process_teachers(df):
         "records": records
     }
 
+COUNTRY_TO_BLOC = {
+    'Angola': 'Lusophone', 'Benin': 'Francophone', 'Botswana': 'Anglophone',
+    'Burkina Faso': 'Francophone', 'Cabo Verde': 'Lusophone', 'Cameroon': 'Francophone',
+    'Congo, Dem. Rep.': 'Francophone', "Côte d'Ivoire": 'Francophone', 'Ethiopia': 'Anglophone',
+    'Ghana': 'Anglophone', 'Guinea-Bissau': 'Lusophone', 'Kenya': 'Anglophone',
+    'Liberia': 'Anglophone', 'Madagascar': 'Francophone', 'Malawi': 'Anglophone',
+    'Mali': 'Francophone', 'Mozambique': 'Lusophone', 'Namibia': 'Anglophone',
+    'Niger': 'Francophone', 'Nigeria': 'Anglophone', 'Rwanda': 'Anglophone',
+    'Senegal': 'Francophone', 'Sierra Leone': 'Anglophone', 'South Africa': 'Anglophone',
+    'São Tomé and Príncipe': 'Lusophone', 'Tanzania': 'Anglophone', 'Togo': 'Francophone',
+    'Uganda': 'Anglophone', 'Zambia': 'Anglophone', 'Zimbabwe': 'Anglophone'
+}
+
 def process_providers(df):
     clean_df = df.copy()
     total = len(clean_df)
@@ -168,10 +185,13 @@ def process_providers(df):
     # Clean records
     records = []
     for _, row in clean_df.iterrows():
+        hq_country = row.get("HQ_Country")
+        bloc = COUNTRY_TO_BLOC.get(hq_country, "Anglophone")
         records.append({
             "id": row.get("Provider_ID"),
             "org": row.get("Org_Name"),
-            "hqCountry": row.get("HQ_Country"),
+            "hqCountry": hq_country,
+            "bloc": bloc,
             "orgType": row.get("Org_Type"),
             "ownership": row.get("Ownership_Model"),
             "offering": row.get("Primary_Offering"),
@@ -181,7 +201,8 @@ def process_providers(df):
             "langSupport": row.get("Local_Language_Support"),
             "revenue": row.get("Revenue_Model"),
             "evidence": clean_value(row.get("Evidence_Level_Held")),
-            "aiFeatures": row.get("AI_Features_Included")
+            "aiFeatures": row.get("AI_Features_Included"),
+            "operatingCountries": clean_value(row.get("Operating_Countries"))
         })
 
     return {
@@ -233,9 +254,13 @@ def process_experts(df):
             "bloc": row.get("Linguistic_Bloc"),
             "vantage": row.get("Vantage_Point"),
             "driver": row.get("Primary_Decision_Driver"),
+            "fundingSource": row.get("Primary_Funding_Source"),
             "donorExit": row.get("Donor_Exit_Fate"),
+            "evidenceThreshold": clean_value(row.get("Realistic_Evidence_Threshold")),
             "constraint": row.get("Top_System_Constraint"),
             "equityRisk": clean_value(row.get("Most_Consequential_Equity_Risk")),
+            "telco": clean_value(row.get("Telco_Role_Significance")),
+            "structuredPedagogy": clean_value(row.get("Structured_Pedagogy_Support")),
             "aiScore": clean_value(row.get("AI_Classroom_Readiness_Score"))
         })
 

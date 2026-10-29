@@ -9,6 +9,10 @@ export default function ExpertTab({ data }) {
 
   const CONSTRAINT_COLORS = ['#ef4444', '#f59e0b', '#0284c7', '#6366f1', '#10b981'];
 
+  const donorDriverPct = experts.decisionDriverDist?.find(x => x.name.toLowerCase().includes('donor'))?.percentage ?? 42;
+  const topConstraint = experts.systemConstraintDist?.[0];
+  const secondConstraint = experts.systemConstraintDist?.[1];
+
   return (
     <div className="space-y-6">
       {/* Intro Header */}
@@ -57,7 +61,7 @@ export default function ExpertTab({ data }) {
           </div>
 
           <div className="mt-4 p-3 bg-indigo-50/70 rounded-lg border border-indigo-200 text-xs text-indigo-900 leading-relaxed">
-            <strong>External Donor Primacy:</strong> In 42% of responses, international donors and multilateral agencies are perceived as the primary agenda setters—often outpacing domestic ministry priorities.
+            <strong>External Donor Primacy:</strong> In {donorDriverPct}% of responses, international donors and multilateral agencies are perceived as the primary agenda setters—often outpacing domestic ministry priorities.
           </div>
         </div>
 
@@ -94,7 +98,7 @@ export default function ExpertTab({ data }) {
           </div>
 
           <div className="mt-4 p-3 bg-slate-50 rounded-lg border border-slate-200 text-xs text-slate-600">
-            <strong>Beyond Hardware:</strong> While infrastructure is #1 (33%), continuous teacher coaching and digital confidence (29%) and recurrent budget sustainability (22%) represent equal or greater systemic bottlenecks.
+            <strong>System Constraints:</strong> Primary bottleneck is {topConstraint?.name || 'Infrastructure'} ({topConstraint?.percentage ?? 33}%), followed by {secondConstraint?.name || 'Teacher Coaching'} ({secondConstraint?.percentage ?? 29}%).
           </div>
         </div>
       </div>

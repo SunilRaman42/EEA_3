@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import defaultData from './data/survey_data.json';
+import { filterAndAggregateData, COUNTRY_TO_BLOC } from './utils/dataProcessor';
 import Header from './components/Header';
 import EmbedModal from './components/EmbedModal';
 import OverviewTab from './components/Tabs/OverviewTab';
@@ -36,6 +37,13 @@ export default function App() {
       if (initialBloc && ['Anglophone', 'Francophone', 'Lusophone'].includes(initialBloc)) {
         setSelectedBloc(initialBloc);
       }
+      const initialCountry = params.get('country');
+      if (initialCountry) {
+        setSelectedCountry(initialCountry);
+        if (COUNTRY_TO_BLOC[initialCountry]) {
+          setSelectedBloc(COUNTRY_TO_BLOC[initialCountry]);
+        }
+      }
     } catch (e) {
       console.warn('URL param parse error:', e);
     }
@@ -58,28 +66,24 @@ export default function App() {
       });
   }, []);
 
-  // Filtered view data based on linguistic bloc
-  const filteredData = React.useMemo(() => {
-    if (selectedBloc === 'All Blocs') return data;
-    
-    // Filter teacher records
-    const filteredTeachers = data.teachers.records.filter(r => r.bloc === selectedBloc);
-    const filteredExperts = data.experts.records.filter(r => r.bloc === selectedBloc);
-    
-    return {
-      ...data,
-      teachers: {
-        ...data.teachers,
-        records: filteredTeachers,
-        total: filteredTeachers.length
-      },
-      experts: {
-        ...data.experts,
-        records: filteredExperts,
-        total: filteredExperts.length
-      }
-    };
-  }, [data, selectedBloc]);
+  // Filtered and aggregated view data based on linguistic bloc and country
+  const filteredData = useMemo(() => {
+    return filterAndAggregateData(data, selectedBloc, selectedCountry);
+  }, [data, selectedBloc, selectedCountry]);
+
+  const handleBlocChange = (bloc) => {
+    setSelectedBloc(bloc);
+    if (selectedCountry !== 'All' && bloc !== 'All Blocs' && COUNTRY_TO_BLOC[selectedCountry] !== bloc) {
+      setSelectedCountry('All');
+    }
+  };
+
+  const handleCountryChange = (country) => {
+    setSelectedCountry(country);
+    if (country !== 'All' && COUNTRY_TO_BLOC[country]) {
+      setSelectedBloc(COUNTRY_TO_BLOC[country]);
+    }
+  };
 
   return (
     <div className={`min-h-screen bg-slate-50 flex flex-col ${isEmbedded ? 'p-2 sm:p-4' : ''}`}>
@@ -89,9 +93,9 @@ export default function App() {
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         selectedBloc={selectedBloc}
-        setSelectedBloc={setSelectedBloc}
+        setSelectedBloc={handleBlocChange}
         selectedCountry={selectedCountry}
-        setSelectedCountry={setSelectedCountry}
+        setSelectedCountry={handleCountryChange}
         onOpenEmbed={() => setIsEmbedModalOpen(true)}
         isEmbedded={isEmbedded}
         hideHeader={hideHeader}

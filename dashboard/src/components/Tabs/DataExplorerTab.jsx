@@ -8,6 +8,11 @@ export default function DataExplorerTab({ data }) {
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 12;
 
+  // Reset to page 1 if data or filters change
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [data, selectedCountry, searchTerm, activeDataset]);
+
   const currentRecords = useMemo(() => {
     return data[activeDataset]?.records || [];
   }, [data, activeDataset]);

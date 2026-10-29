@@ -10,6 +10,11 @@ export default function ProviderTab({ data }) {
   const OFFLINE_COLORS = ['#10b981', '#f59e0b', '#ef4444'];
   const REVENUE_COLORS = ['#0284c7', '#6366f1', '#10b981', '#f59e0b'];
 
+  const needConnectionPct = providers.offlineDist?.find(x => x.name.toLowerCase().includes('needs a connection') || x.name.toLowerCase().includes('no'))?.percentage ?? 24;
+  const b2cPct = providers.revenueDist?.find(x => x.name.toLowerCase().includes('b2c') || x.name.toLowerCase().includes('families'))?.percentage ?? 34;
+  const donorPct = providers.revenueDist?.find(x => x.name.toLowerCase().includes('donor') || x.name.toLowerCase().includes('grant'))?.percentage ?? 29;
+  const b2gPct = providers.revenueDist?.find(x => x.name.toLowerCase().includes('b2g') || x.name.toLowerCase().includes('ministry'))?.percentage ?? 21;
+
   return (
     <div className="space-y-6">
       {/* Intro Header */}
@@ -101,7 +106,7 @@ export default function ProviderTab({ data }) {
           </div>
 
           <div className="mt-4 p-3 bg-slate-50 rounded-lg border border-slate-200 text-xs text-slate-600">
-            <strong>Offline Deficit:</strong> 24% of products strictly require an active internet connection, automatically excluding deep rural and peri-urban schools with zero or intermittent data coverage.
+            <strong>Offline Deficit:</strong> {needConnectionPct}% of products strictly require an active internet connection, automatically excluding deep rural and peri-urban schools with zero or intermittent data coverage.
           </div>
         </div>
       </div>
@@ -137,7 +142,7 @@ export default function ProviderTab({ data }) {
           </div>
 
           <div className="mt-5 p-3 bg-emerald-50/60 rounded-lg border border-emerald-200 text-xs text-slate-700">
-            <strong>B2C & Donor Reliance:</strong> Direct household purchases (34%) and donor grants (29%) dominate over public procurement (21%), reflecting the friction of selling directly to government ministries.
+            <strong>B2C & Donor Reliance:</strong> Direct household purchases ({b2cPct}%) and donor grants ({donorPct}%) dominate over public procurement ({b2gPct}%), reflecting the friction of selling directly to government ministries.
           </div>
         </div>
 

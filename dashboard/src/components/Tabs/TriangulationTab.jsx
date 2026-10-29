@@ -8,12 +8,20 @@ import { AlertTriangle, CheckCircle, Scale, BrainCircuit, ShieldAlert, Sparkles 
 export default function TriangulationTab({ data }) {
   const { triangulation, experts, providers, teachers } = data;
 
-  const DONOR_EXIT_DATA = [
+  const DONOR_EXIT_DATA = triangulation?.donorExitRisk?.breakdown || [
     { name: 'Stops completely / collapses', value: 53.0, color: '#ef4444' },
     { name: 'Shrinks to token presence', value: 31.0, color: '#f59e0b' },
     { name: 'Ministry absorbs & funds core', value: 12.0, color: '#10b981' },
     { name: 'Community sustains', value: 4.0, color: '#6366f1' },
   ];
+
+  const expertRct = triangulation?.evidenceThresholdComparison?.find(x => x.tier === 'Full RCT')?.expertsRealistic ?? 6;
+  const expertPrePost = triangulation?.evidenceThresholdComparison?.find(x => x.tier === 'Pre-Post Evaluation')?.expertsRealistic ?? 44;
+  const providerAiPct = triangulation?.aiAdoptionComparison?.[0]?.percentage ?? 26;
+  const teacherAiPct = triangulation?.aiAdoptionComparison?.[1]?.percentage ?? 18;
+  const teacherAiTrainPct = triangulation?.aiAdoptionComparison?.[2]?.percentage ?? 11;
+  const collapseRisk = triangulation?.donorExitRisk?.collapseOrShrink ?? 84;
+  const teacherAiLangWell = triangulation?.languageConcordance?.[1]?.value ?? 10;
 
   return (
     <div className="space-y-6">
@@ -65,8 +73,8 @@ export default function TriangulationTab({ data }) {
 
           <div className="mt-4 p-3 bg-slate-50 rounded-lg border border-slate-200 text-xs text-slate-600 leading-relaxed">
             <span className="font-semibold text-slate-800">Key Insight:</span> While donors often prioritize Gold-Standard RCTs, only 
-            <strong className="text-indigo-700"> 6% of experts</strong> consider requiring RCTs realistic without shutting out local innovations. 
-            The sweet spot for pragmatic adoption is robust <strong className="text-sky-700">Pre-Post learning evaluations (44%)</strong>.
+            <strong className="text-indigo-700"> {expertRct}% of experts</strong> consider requiring RCTs realistic without shutting out local innovations. 
+            The sweet spot for pragmatic adoption is robust <strong className="text-sky-700">Pre-Post learning evaluations ({expertPrePost}%)</strong>.
           </div>
         </div>
 
@@ -117,7 +125,7 @@ export default function TriangulationTab({ data }) {
           </div>
 
           <div className="mt-4 p-3 bg-rose-50/70 rounded-lg border border-rose-200 text-xs text-rose-800 leading-relaxed">
-            <span className="font-semibold">The 84% Cliff:</span> A staggering 84% of surveyed experts report that donor-funded EdTech tools either abruptly terminate or atrophy into token programs due to absence of recurrent public finance plans.
+            <span className="font-semibold">The {collapseRisk}% Cliff:</span> Over {collapseRisk}% of surveyed experts report that donor-funded EdTech tools either abruptly terminate or atrophy into token programs due to absence of recurrent public finance plans.
           </div>
         </div>
       </div>
@@ -153,8 +161,8 @@ export default function TriangulationTab({ data }) {
           </div>
 
           <div className="mt-6 p-3 bg-amber-50/60 rounded-lg border border-amber-200 text-xs text-slate-700 leading-relaxed">
-            <strong>Training Disconnect:</strong> While 26% of providers embed AI and 18% of teachers use AI regularly, only 
-            <strong> 11% of teachers have received formal AI training</strong>, forcing educators to navigate LLM hallucination and curriculum alignment unaided.
+            <strong>Training Disconnect:</strong> While {providerAiPct}% of providers embed AI and {teacherAiPct}% of teachers use AI regularly, only 
+            <strong> {teacherAiTrainPct}% of teachers have received formal AI training</strong>, forcing educators to navigate LLM hallucination and curriculum alignment unaided.
           </div>
         </div>
 
@@ -185,7 +193,7 @@ export default function TriangulationTab({ data }) {
           </div>
 
           <div className="mt-4 p-3 bg-slate-50 rounded-lg border border-slate-200 text-xs text-slate-600 leading-relaxed">
-            <strong>Instruction Paradox:</strong> Over 68% of instruction occurs in colonial European languages (EN/FR/PT) despite deep learner comprehension gaps. Only 10% of teachers report that emerging digital/AI tools handle indigenous languages satisfactorily.
+            <strong>Instruction Paradox:</strong> Over 68% of instruction occurs in colonial European languages (EN/FR/PT) despite deep learner comprehension gaps. Only {teacherAiLangWell}% of teachers report that emerging digital/AI tools handle indigenous languages satisfactorily.
           </div>
         </div>
       </div>

@@ -134,7 +134,7 @@ export default function OverviewTab({ data, onSelectTab }) {
             <span>The Local Language Asymmetry</span>
           </div>
           <p className="text-slate-700 text-xs leading-relaxed">
-            While <strong className="text-sky-900 font-semibold">24%</strong> of EdTech providers claim multi-lingual local language support, only <strong className="text-sky-900 font-semibold">10%</strong> of teachers find generative AI tools handle national/local languages well in real classroom practice.
+            While <strong className="text-sky-900 font-semibold">{triangulation?.languageConcordance?.[0]?.value ?? 24}%</strong> of EdTech providers claim multi-lingual local language support, only <strong className="text-sky-900 font-semibold">{triangulation?.languageConcordance?.[1]?.value ?? 10}%</strong> of teachers find generative AI tools handle national/local languages well in real classroom practice.
           </p>
         </div>
 
@@ -144,7 +144,7 @@ export default function OverviewTab({ data, onSelectTab }) {
             <span>Safeguarding & Evidence Gap</span>
           </div>
           <p className="text-slate-700 text-xs leading-relaxed">
-            Only <strong className="text-emerald-900 font-semibold">31%</strong> of teachers report knowing formal school procedures for reporting digital harm, while 80% of providers claim meaningful student wellbeing safeguards.
+            Only <strong className="text-emerald-900 font-semibold">{teachers.harmReportingDist?.find(x => x.name.toLowerCase().includes('procedure'))?.percentage ?? 31}%</strong> of teachers report knowing formal school procedures for reporting digital harm.
           </p>
         </div>
       </div>
@@ -155,10 +155,10 @@ export default function OverviewTab({ data, onSelectTab }) {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h3 className="font-semibold text-slate-800 text-sm">Top Represented Countries in Survey Sample</h3>
-              <p className="text-xs text-slate-500">Teacher response distribution across primary SSA hub countries</p>
+              <p className="text-xs text-slate-500">Teacher response distribution across represented SSA hub countries</p>
             </div>
             <span className="text-xs font-medium text-sky-600 bg-sky-50 px-2.5 py-1 rounded-full border border-sky-100">
-              48 SSA Countries Surveyed
+              {stats.countriesRepresented} Countries in Sample
             </span>
           </div>
 
@@ -196,7 +196,7 @@ export default function OverviewTab({ data, onSelectTab }) {
                   <div className="font-semibold text-xs text-slate-800">1. Teacher Survey</div>
                   <div className="text-[11px] text-slate-500">Electricity, devices, workload, AI & phones</div>
                 </div>
-                <span className="text-xs font-bold text-sky-600 bg-sky-100 px-2 py-0.5 rounded">600</span>
+                <span className="text-xs font-bold text-sky-600 bg-sky-100 px-2 py-0.5 rounded">{teachers.total}</span>
               </div>
 
               <div 
@@ -207,7 +207,7 @@ export default function OverviewTab({ data, onSelectTab }) {
                   <div className="font-semibold text-xs text-slate-800">2. Provider Survey</div>
                   <div className="text-[11px] text-slate-500">Business model, offline capability, evidence</div>
                 </div>
-                <span className="text-xs font-bold text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded">120</span>
+                <span className="text-xs font-bold text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded">{providers.total}</span>
               </div>
 
               <div 
@@ -218,7 +218,7 @@ export default function OverviewTab({ data, onSelectTab }) {
                   <div className="font-semibold text-xs text-slate-800">3. Expert Consultation</div>
                   <div className="text-[11px] text-slate-500">Adoption drivers, procurement bottlenecks, equity</div>
                 </div>
-                <span className="text-xs font-bold text-indigo-600 bg-indigo-100 px-2 py-0.5 rounded">80</span>
+                <span className="text-xs font-bold text-indigo-600 bg-indigo-100 px-2 py-0.5 rounded">{experts.total}</span>
               </div>
             </div>
           </div>
