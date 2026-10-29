@@ -33,7 +33,7 @@ jobs:
 
       - name: Install Python Dependencies
         run: |
-          pip install pandas openpyxl
+          pip install -r requirements.txt
 
       - name: Process Survey Responses into Dashboard Dataset
         run: |
